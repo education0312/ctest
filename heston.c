@@ -144,8 +144,8 @@ void ConstructC11(int maxs,int maxv,double tao,double **A1,double ** A0,double *
 {
 	int i,j;
 	
-	for ( i=0;i<maxv*maxs;j++)
-		for ( j = 0; j<maxs*maxv;i++)
+	for ( i=0;i<maxv*maxs;i++)
+		for ( j = 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
 			C11[i][j]=1+tao/2*(A1[i][j]+A0[i][j]/2);
@@ -161,8 +161,8 @@ double ** ConstructC12(int maxs,int maxv,double tao,double **A2,double ** A0)
 	double ** C12 =(double **) malloc(maxs*maxv*sizeof(double*));
 	for( i =0;i<maxs*maxv;i++)
 	C12[i]=(double *) malloc(maxs*maxv*sizeof(double));
-	for (i=0;i<maxv*maxs;j++)
-		for ( j = 0; j<maxs*maxv;i++)
+	for (i=0;i<maxv*maxs;i++)
+		for ( j = 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
 			C12[i][j]=1-tao/2*(A2[i][j]+A0[i][j]/2);
@@ -181,8 +181,8 @@ double ** ConstructC21(int maxs,int maxv,double tao,double **A2,double ** A0)
 	double ** C21 =(double **) malloc(maxs*maxv*sizeof(double*));
 	for ( i = 0;i<maxs*maxv;i++)
 	C21[i]=(double *) malloc(maxs*maxv*sizeof(double));
-	for (i=0;i<maxv*maxs;j++)
-		for ( j = 0; j<maxs*maxv;i++)
+	for (i=0;i<maxv*maxs;i++)
+		for ( j = 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
 			C21[i][j]=1+tao/2*(A2[i][j]+A0[i][j]/2);
@@ -198,8 +198,8 @@ double ** ConstructC22(int maxs,int maxv,double tao,double **A1,double ** A0)
 	double ** C22 = (double**)malloc(maxs*maxv*sizeof(double*));
 	for( i =0;i<maxs*maxv;i++)
 	C22[i]=(double *) malloc(maxs*maxv*sizeof(double));
-	for ( i=0;i<maxv*maxs;j++)
-		for ( j= 0; j<maxs*maxv;i++)
+	for ( i=0;i<maxv*maxs;i++)
+		for ( j= 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
 			C22[i][j]=1-tao/2*(A1[i][j]+A0[i][j]/2);
