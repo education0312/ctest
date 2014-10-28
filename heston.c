@@ -1,6 +1,7 @@
+
 #include "math.h"
 #include "stdio.h"
-#include "malloc.h"
+#include "stdlib.h"
 double K=10;
 void ConstructA1(int maxs,int maxv,double r,double **A1)
 {	double k = 1.0/maxv;
@@ -16,16 +17,16 @@ void ConstructA1(int maxs,int maxv,double r,double **A1)
 	{
 		for( i =0;i<maxs;i++)
 		{
-			if(i==0 && j==0)
+			if(i==0 )
 			{
 				A1[j*maxs+i][j*maxs+i]= k*(j+1)*(i+1)*(i+1);
 				A1[j*maxs+i][j*maxs+i+1] = -k*(j+1)*(i+1)*(i+1)/2-r*(i+1)/2;
 
 			}
-			else if (i==maxs-1 && j == maxv-1)
+			else if (i==maxs-1 )
 			{
 				A1[j*maxs+i][j*maxs+i]= k*(j+1)*(i+1)*(i+1);
-				A1[j*maxs+i][j*maxs+i-1] = -k*(j+1)*(i+1)*(i+1)/2+r*(i+1)/2;
+				A1[j*maxs+i][j*maxs+i-1] = -k*(j+1)*(i+1)*(i+1)/2;
 			}
 			else
 			{
@@ -58,7 +59,7 @@ void ConstructA2(int maxs, int maxv,double **A2, double gama,double alfa,double 
 				A2[(j)*maxs+i][(j+1)*maxs+i] = -gama*gama*(j+1)/2/k -alfa*beta/2/k+alfa*(j+1)/2;
 			}
 			else if(j==maxv-1)
-			A2[(j)*maxs+i][(j-1)*maxs+i] =-gama*gama*(j+1)/2/k +alfa*beta/2/k-alfa*(j+1)/2;
+			A2[(j)*maxs+i][(j-1)*maxs+i] =-gama*gama*(j+1)/k/2 ;
 			else
 			{
 				A2[(j)*maxs+i][(j+1)*maxs+i] = -gama*gama*(j+1)/2/k -alfa*beta/2/k+alfa*(j+1)/2;
@@ -107,12 +108,24 @@ void ConstructA0(int maxs,int maxv,double **A0,double r ,double pho,double gama)
 				}
 
 			}
-			else
+			else 
 			{
+				if (i==0){
+				A0[j*maxs+i][(j-1)*maxs+i+1]=pho*gama*(i+1)*(j+1)/4;
+				A0[j*maxs+i][(j+1)*maxs+i+1]=-pho*gama*(i+1)*(j+1)/4;
+				}
+				else if(i==maxs-1)
+				{
+					A0[j*maxs+i][(j-1)*maxs+i-1]=-pho*gama*(i+1)*(j+1)/4;
+					A0[j*maxs+i][(j+1)*maxs+i-1]=pho*gama*(i+1)*(j+1)/4;
+				}
+				else
+				{
 				A0[j*maxs+i][(j+1)*maxs+i+1]=-pho*gama*(i+1)*(j+1)/4;
 				A0[j*maxs+i][(j+1)*maxs+i-1]=pho*gama*(i+1)*(j+1)/4;
 				A0[j*maxs+i][(j-1)*maxs+i-1]=-pho*gama*(i+1)*(j+1)/4;
 				A0[j*maxs+i][(j-1)*maxs+i+1]=pho*gama*(i+1)*(j+1)/4;
+				}
 			}
 		}
 	}
@@ -123,11 +136,11 @@ double* Constructg(int maxs,double h)
 {	int i;
 	double * g=(double *)malloc(maxs*sizeof(double));
 	for ( i = 0;i<maxs;i++){
-		if ((K-(i+1)*h)<1e-8)
+		if ((K-(i+1)*h)>1e-7)
 		{
-			g[i]=0;
+			g[i]=K-(i+1)*h;
 		}
-		else g[i]=K-(i+1)*h;
+		else g[i]=0.0;
 		}
      //	printf("helloG!\n");
 	return g;
@@ -148,9 +161,9 @@ void ConstructC11(int maxs,int maxv,double tao,double **A1,double ** A0,double *
 		for ( j = 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
-			C11[i][j]=1+tao/2*(A1[i][j]+A0[i][j]/2);
+			C11[i][j]=1.0+tao/2*(A1[i][j]+A0[i][j]/2.0);
 			else
-			C11[i][j]=tao/2*(A1[i][j]+A0[i][j]/2);
+			C11[i][j]=tao/2*(A1[i][j]+A0[i][j]/2.0);
 		}
 	printf("helloC11\n");
 	
@@ -165,9 +178,9 @@ double ** ConstructC12(int maxs,int maxv,double tao,double **A2,double ** A0)
 		for ( j = 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
-			C12[i][j]=1-tao/2*(A2[i][j]+A0[i][j]/2);
+			C12[i][j]=1.0-tao/2*(A2[i][j]+A0[i][j]/2.0);
 			else
-			C12[i][j]=-tao/2*(A2[i][j]+A0[i][j]/2);
+			C12[i][j]=-tao/2*(A2[i][j]+A0[i][j]/2.0);
 
 		}
 	printf("helloC12\n");
@@ -185,9 +198,9 @@ double ** ConstructC21(int maxs,int maxv,double tao,double **A2,double ** A0)
 		for ( j = 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
-			C21[i][j]=1+tao/2*(A2[i][j]+A0[i][j]/2);
+			C21[i][j]=1.0+tao/2*(A2[i][j]+A0[i][j]/2.0);
 			else
-			C21[i][j]=tao/2*(A2[i][j]+A0[i][j]/2);
+			C21[i][j]=tao/2*(A2[i][j]+A0[i][j]/2.0);
 		}
 	printf("helloC21\n");
 	return C21;
@@ -202,9 +215,9 @@ double ** ConstructC22(int maxs,int maxv,double tao,double **A1,double ** A0)
 		for ( j= 0; j<maxs*maxv;j++)
 		{
 			if (i==j)
-			C22[i][j]=1-tao/2*(A1[i][j]+A0[i][j]/2);
+			C22[i][j]=1.0-tao/2*(A1[i][j]+A0[i][j]/2.0);
 			else
-			C22[i][j]=-tao/2*(A1[i][j]+A0[i][j]/2);
+			C22[i][j]=-tao/2*(A1[i][j]+A0[i][j]/2.0);
 		}
 	printf("helloC22\n");
 	return C22;
@@ -220,7 +233,7 @@ void  myUL(double ** C11,int maxs,int maxv,double **u,double**l)
 	l[m-1][i]=C11[m-1][i];
 	u[i][m-1]=C11[i][m-1]/C11[m-1][m-1];
 	}
-    for ( i = m-2;i>=0;i--)
+    for ( i = m-2;i>=0;i--){
 	for ( j =i;j>=0;j--){
 	    double sum =0;
 	    for ( k = i+1;k<m;k++)
@@ -233,6 +246,7 @@ void  myUL(double ** C11,int maxs,int maxv,double **u,double**l)
 	    for ( k = i+1;k<m;k++)
 	    sum += u[j][k]*l[k][i];
 	    u[j][i]= (C11[j][i]-sum)/l[i][i];
+	}
 	}
 	printf("helloUL\n");
 
@@ -295,7 +309,7 @@ void product(double **C,double *U,int maxs,int maxv, double *p)
 
 double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,double **u2,double ** l1,double **l2,int steps)
 {
-	int i,j,k;
+	int i,j,k,s;
 	int m = maxs*maxv;
 	double *U0=(double *)malloc(m*sizeof(double));
 	double *U1=(double *)malloc(m*sizeof(double));
@@ -312,42 +326,55 @@ double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,
 	{
 	product(C12,U0,maxs,maxv,q);
 	product(inverseu1,q,maxs,maxv,p);
-	
-	
-	U1[0]=p[0]/l1[0][0];
-	
-	for ( i =1;i<m;i++)
+	for ( i =0;i<m;i++)
 	{
 		double sum = 0;
 		for ( j = 0;j<i;j++)
 		sum = sum+U1[j]*l1[i][j];
 		U1[i]=(p[i]-sum)/l1[i][i];
+		if (U1[i]-g[(i)%maxs]<1e-7)
+		U1[i]=g[(i)%maxs];
+		/*if(U1[i]<1e-6)
+		{
+			for (s=i;s<maxs*(i/maxs+1);s++)
+			{
+				U1[s]=0.0;
+			}
+			i=s;
+			continue;
+		}*/
 	}
-	for (i=0;i<m;i++)
-	{
-		if (U1[i]-g[i% maxs]<1e-7)
-		U1[i]=g[i% maxs];
-	}
-	U0=U1;
+	
+	for (i = 0;i<m;i++)
+	U0[i]=U1[i];
+	
 	product(C22,U0,maxs,maxv,q);
 	product(inverseu2,q,maxs,maxv,p);
-	
-	
-	U1[0]=p[0]/l2[0][0];
-	
-	for ( i =1;i<m;i++)
+	for ( i =0;i<m;i++)
 	{
 		double sum = 0;
 		for ( j = 0;j<i;j++)
 		sum = sum+U1[j]*l2[i][j];
 		U1[i]=(p[i]-sum)/l2[i][i];
+		if (U1[i]-g[(i)%maxs]<1e-7 )
+		U1[i]=g[(i)%maxs];
+		
+		/*if(U1[i]<1e-6)
+		{
+			for (s=i;s<maxs*(i/maxs+1);s++)
+			{
+				U1[s]=0.0;
+			}
+			i=s;
+			continue;
+		}*/
 	}
-	for(i=0;i<m;i++)
+	for (i=0;i<m;i++)
 	{
-		if (U1[i]-g[i% maxs]<1e-7)
-		U1[i]=g[i% maxs];
+		
 	}
-	U0=U1;
+	for (i = 0;i<m;i++)
+	U0[i]=U1[i];
 	
 		printf("%d\n",k);
 	}
@@ -355,9 +382,9 @@ double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,
 }
 int main()		
 {
-	int i,j;
+	int i,j,s;
 	double solution;
-	int maxs =80;int maxv = 32; int steps = 64;
+	int maxs =80;int maxv = 64; int steps = 32;
 	double t = 0.25;
 	double h = 20.0/maxs;
 	double k = 1.0/maxv;
@@ -389,15 +416,21 @@ int main()
 		A0[i]=(double *) malloc(maxs*maxv*sizeof(double));
 	}
        ConstructA0(maxs,maxv,A0,r,pho,gama);
+	   printf("====1 ===after construct a0\n");
 	double **C11=(double **) malloc(maxs*maxv*sizeof(double *));
+	printf("===== 2 ==after malloc c11 porinter a0\n");
 	for ( i =0;i<maxs*maxv;i++)
 	{
 		C11[i]=(double *) malloc(maxs*maxv*sizeof(double));
 	}
+
 	ConstructC11(maxs,maxv,tao,A1,A0,C11);
+
 	double **C12=(double **)ConstructC12(maxs,maxv,tao,A2,A0);
+
 	double **C21=(double **)ConstructC21(maxs,maxv,tao,A2,A0);
 	double **C22=(double **)ConstructC22(maxs,maxv,tao,A1,A0);
+	
 	free(A1);
 	free(A2);
 	free(A0);
@@ -434,13 +467,15 @@ int main()
 	}
 	printf("j=%d\n",j);
 	solution = myU0[j*maxs+i];
-	for (i=0;i<maxs*maxv;i++){
-	if(i%maxs==0)
-	printf("%d\n%f\n ",i/maxs,myU0[i]);
+	for (s=0;s<maxs*maxv;s++){
+	if(s%maxs==0)
+	printf("%d\n%f\n ",s/maxs,myU0[s]);
 	else
-	printf("%f ",myU0[i]);
+	printf("%f ",myU0[s]);
 	}
 	printf("solution is %f\n",solution);
+	for (s=1;s<5;s++)
+	printf("%f\n",myU0[j*maxs+i+4*s]);
 	return 0;
       
 
