@@ -381,7 +381,7 @@ int main()
     double	tao = 0.25/steps;
 	double pho = 0.1;double gama = 0.9;double r = 0.1;
 	double alfa = 5.0;double beta = 0.16;double sigma=0.0625;
-	printf("hello1\n");
+	printf("160*64*32\n");
 	double *g=Constructg(maxs,h);
 	double **A1 =(double **) malloc(maxs*maxv*sizeof(double *));
 	for ( i = 0;i<maxs*maxv;i++)
