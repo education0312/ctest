@@ -2,6 +2,7 @@
 #include "math.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "time.h"
 double K=10;
 void ConstructA1(int maxs,int maxv,double r,double **A1)
 {	double k = 1.0/maxv;
@@ -310,6 +311,7 @@ void product(double **C,double *U,int maxs,int maxv, double *p)
 double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,double **u2,double ** l1,double **l2,int steps)
 {
 	int i,j,k,s;
+	clock_t start,finish;
 	int m = maxs*maxv;
 	double *U0=(double *)malloc(m*sizeof(double));
 	double *U1=(double *)malloc(m*sizeof(double));
@@ -322,6 +324,7 @@ double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,
 	inverseu1=inverseU(maxs,maxv,u1);
 	double ** inverseu2;
 	inverseu2=inverseU(maxs,maxv,u2);
+	start = clock();
 	for ( k =0;k<steps;k++)
 	{
 	product(C12,U0,maxs,maxv,q);
@@ -334,15 +337,7 @@ double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,
 		U1[i]=(p[i]-sum)/l1[i][i];
 		if (U1[i]-g[(i)%maxs]<1e-7)
 		U1[i]=g[(i)%maxs];
-		/*if(U1[i]<1e-6)
-		{
-			for (s=i;s<maxs*(i/maxs+1);s++)
-			{
-				U1[s]=0.0;
-			}
-			i=s;
-			continue;
-		}*/
+		
 	}
 	
 	for (i = 0;i<m;i++)
@@ -359,15 +354,7 @@ double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,
 		if (U1[i]-g[(i)%maxs]<1e-7 )
 		U1[i]=g[(i)%maxs];
 		
-		/*if(U1[i]<1e-6)
-		{
-			for (s=i;s<maxs*(i/maxs+1);s++)
-			{
-				U1[s]=0.0;
-			}
-			i=s;
-			continue;
-		}*/
+		
 	}
 	for (i=0;i<m;i++)
 	{
@@ -378,13 +365,15 @@ double * solve(int maxs,int maxv,double *g,double **C12,double**C22,double **u1,
 	
 		printf("%d\n",k);
 	}
+	finish = clock();
+	printf("%d",finish-start);
 	return U0;
 }
 int main()		
 {
 	int i,j,s;
 	double solution;
-	int maxs =80;int maxv = 64; int steps = 64;
+	int maxs =160;int maxv = 64; int steps = 32;
 	double t = 0.25;
 	double h = 20.0/maxs;
 	double k = 1.0/maxv;
@@ -475,9 +464,9 @@ int main()
 	}
 	printf("solution is %f\n",solution);
 	for (s=1;s<5;s++)
-	printf("%f\n",myU0[j*maxs+i+4*s]);
+	printf("%f\n",myU0[j*maxs+i+8*s]);
 	for (s=0;s<5;s++)
-	printf("%f\n",myU0[(j+12)*maxs+i+4*s]);
+	printf("%f\n",myU0[(j+12)*maxs+i+8*s]);
 	return 0;
       
 
