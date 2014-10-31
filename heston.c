@@ -476,7 +476,7 @@ int main()
 	printf("solution is %f\n",solution);
 	for (s=1;s<5;s++)
 	printf("%f\n",myU0[j*maxs+i+4*s]);
-	for (s=0;s<5;i++)
+	for (s=0;s<5;s++)
 	printf("%f\n",myU0[(j+12)*maxs+i+4*s]);
 	return 0;
       
