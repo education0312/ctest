@@ -369,7 +369,7 @@ int main()
 {
 	int i,j,s;
 	double solution;
-	int maxs =160;int maxv = 64; int steps = 32;
+	int maxs =160;int maxv = 128; int steps = 128;
 	double t = 0.25;
 	double h = 20.0/maxs;
 	double k = 1.0/maxv;
@@ -377,7 +377,7 @@ int main()
     double	tao = 0.25/steps;
 	double pho = 0.1;double gama = 0.9;double r = 0.1;
 	double alfa = 5.0;double beta = 0.16;double sigma=0.0625;
-	printf("160*64*32\n");
+	printf("160*128*128\n");
 	double *g=Constructg(maxs,h);
 	double **A1 =(double **) malloc(maxs*maxv*sizeof(double *));
 	for ( i = 0;i<maxs*maxv;i++)
@@ -462,7 +462,7 @@ int main()
 	for (s=1;s<5;s++)
 	printf("%f\n",myU0[j*maxs+i+8*s]);
 	for (s=0;s<5;s++)
-	printf("%f\n",myU0[(j+12)*maxs+i+8*s]);
+	printf("%f\n",myU0[(j+24)*maxs+i+8*s]);
 	return 0;
       
 
